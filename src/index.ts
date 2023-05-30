@@ -1,6 +1,8 @@
-const consolet = (input: string): string => {
-  return input;
+import addSystemTaskCategory from '@flowbuild/engine';
+import BasicAuthNode from './basicAuthNode';
+
+const BasicAuthNodeWithTaskCategory = () => {
+  addSystemTaskCategory({ basicAuth: BasicAuthNode });
 };
 
-const test: string = consolet('testing');
-console.log(test);
+export default BasicAuthNodeWithTaskCategory;
