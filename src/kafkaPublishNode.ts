@@ -1,4 +1,4 @@
-import kafka from '../services/broker/kafka';
+import { publishMessage } from './utils/kafka';
 import { ProcessStatus, Nodes } from '@flowbuild/engine';
 import Ajv from 'ajv';
 import addFormats from 'ajv-formats';
@@ -85,7 +85,7 @@ class KafkaPublishNode extends Nodes.SystemTaskNode {
         throw JSON.stringify(errors);
       }
       const { message, event, topic } = executionData;
-      const result = await kafka.publishMessage({
+      const result = await publishMessage({
         topic,
         message: { ...message, ...{ processId: executionData.process_id } },
         key: event,

@@ -1,6 +1,6 @@
 import { logger } from './logger';
 
-let jwtSecret = process.env.JWT_KEY || '1234';
+let jwtSecret: any = process.env.JWT_KEY || '1234';
 
 if (process.env.JWT_ALG === 'RS256') {
   logger.info('using RS256, switching secretKey to certificate');

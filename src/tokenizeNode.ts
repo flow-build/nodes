@@ -4,8 +4,8 @@ import addFormats from 'ajv-formats';
 import { logger } from './utils/logger';
 import { v1 as uuid } from 'uuid';
 import { nanoid } from 'nanoid';
-import { createJWTToken } from '../services/tokenGenerator';
-import { jwtSecret } from '../utils/jwtSecret';
+import { createJWTToken } from './utils/tokenGenerator';
+import { jwtSecret } from './utils/jwtSecret';
 
 class TokenizeNode extends Nodes.SystemTaskNode {
   [x: string]: any;

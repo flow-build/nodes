@@ -74,7 +74,7 @@ class RemapDataNode extends Nodes.SystemTaskNode {
 
   static remapData(data: any[], dictionary: any) {
     let messages: string[] = [];
-    const remapped_data = data.map((item) => {
+    const remapped_data = data.map((item: any) => {
       const remapped_item: any = {};
       for (const [key, value] of Object.entries(dictionary)) {
         if (typeof value === 'object') {
@@ -95,11 +95,12 @@ class RemapDataNode extends Nodes.SystemTaskNode {
           }
         } else if (
           value !== null &&
+          typeof value === 'string' &&
           value.length > 0 &&
           item[value] !== undefined
         ) {
           remapped_item[key] = item[value];
-        } else if (value === null || value.length === 0) {
+        } else if (value === null || value === '') {
           remapped_item[key] = value;
         }
 
@@ -129,10 +130,8 @@ class RemapDataNode extends Nodes.SystemTaskNode {
       const { data, dictionary } = executionData;
       let status = 'success';
 
-      let { remapped_data, messages } = RemapDataNode.remapData(
-        data,
-        dictionary,
-      );
+      let { remapped_data } = RemapDataNode.remapData(data, dictionary);
+      const { messages } = RemapDataNode.remapData(data, dictionary);
 
       if (messages.length > 0) {
         if (Object.keys(remapped_data[0]).length > 0) {

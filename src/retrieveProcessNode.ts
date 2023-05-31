@@ -3,7 +3,7 @@ import Ajv from 'ajv';
 import addFormats from 'ajv-formats';
 import { Index } from '@flowbuild/indexer';
 import { logger } from './utils/logger';
-import { db } from '../tests/utils/db';
+import { db } from './utils/db';
 
 class RetrieveProcessesNode extends Nodes.SystemTaskNode {
   [x: string]: any;
