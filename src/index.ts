@@ -1,15 +1,18 @@
-import addSystemTaskCategory from '@flowbuild/engine';
-import BasicAuthNode from './basicAuthNode';
-import DeepCompareNode from './deepCompareNode';
+import { config as dotenvConfig } from 'dotenv';
+import { logger } from './utils/logger';
+import { addSystemTaskCategory } from '@flowbuild/engine';
 import createIndexNode from './createIndexNode';
-import createUuidNode from './createUuidNode';
-import filterDataNode from './filterDataNode';
-import KafkaPublishNode from './kafkaPublishNode';
-import remapDataNode from './remapDataNode';
 import retrieveProcessNode from './retrieveProcessNode';
 import tokenizeNode from './tokenizeNode';
-import { logger } from './utils/logger';
 import validateSchemaNode from './validateSchemaNode';
+import createUuidNode from './createUuidNode';
+import BasicAuthNode from './basicAuthNode';
+import remapDataNode from './remapDataNode';
+import filterDataNode from './filterDataNode';
+import DeepCompareNode from './deepCompareNode';
+import KafkaPublishNode from './kafkaPublishNode';
+
+dotenvConfig();
 
 const setCustomNodes = () => {
   addSystemTaskCategory({ createIndex: createIndexNode });
@@ -30,10 +33,11 @@ const setCustomNodes = () => {
   logger.info('added filterDataNode');
   addSystemTaskCategory({ deepCompare: DeepCompareNode });
   logger.info('added deepCompareNode');
+
   if (process.env.KAFKA) {
     addSystemTaskCategory({ kafkaPublish: KafkaPublishNode });
     logger.info('added kafkaPublishNode');
   }
 };
 
-module.exports.setCustomNodes = setCustomNodes;
+export { setCustomNodes };

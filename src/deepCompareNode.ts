@@ -1,87 +1,88 @@
-import { SystemTaskNode, ProcessStatus } from '@flowbuild/engine';
+import { ProcessStatus, Nodes } from '@flowbuild/engine';
 import Ajv from 'ajv';
 import addFormats from 'ajv-formats';
 import { logger } from './utils/logger';
 import _ from 'lodash';
 
-class DeepCompareNode extends SystemTaskNode {
-  [x: string]: any;
-  static schema = {
-    type: 'object',
-    required: [
-      'id',
-      'name',
-      'next',
-      'type',
-      'category',
-      'lane_id',
-      'parameters',
-    ],
-    properties: {
-      id: { type: 'string' },
-      name: { type: 'string' },
-      next: { type: 'string' },
-      type: { type: 'string' },
-      category: { type: 'string' },
-      lane_id: { type: 'string' },
-      parameters: {
-        type: 'object',
-        required: ['input'],
-        properties: {
-          input: {
-            type: 'object',
-            required: ['base', 'candidate', 'commonKeys'],
-            properties: {
-              base: {
-                oneOf: [
-                  {
-                    type: 'array',
-                    items: { type: 'object' },
-                  },
-                  {
-                    type: 'object',
-                  },
-                ],
-              },
-              candidate: {
-                oneOf: [
-                  {
-                    type: 'array',
-                    items: { type: 'object' },
-                  },
-                  {
-                    type: 'object',
-                  },
-                ],
-              },
-              commonKeys: {
-                oneOf: [
-                  {
-                    type: 'array',
-                    items: { type: 'string' },
-                  },
-                  {
-                    type: 'object',
-                  },
-                ],
-              },
-              ignoreKeys: {
-                oneOf: [
-                  {
-                    type: 'array',
-                    items: { type: 'string' },
-                  },
-                  {
-                    type: 'object',
-                  },
-                ],
+class DeepCompareNode extends Nodes.SystemTaskNode {
+  static get schema() {
+    return {
+      type: 'object',
+      required: [
+        'id',
+        'name',
+        'next',
+        'type',
+        'category',
+        'lane_id',
+        'parameters',
+      ],
+      properties: {
+        id: { type: 'string' },
+        name: { type: 'string' },
+        next: { type: 'string' },
+        type: { type: 'string' },
+        category: { type: 'string' },
+        lane_id: { type: 'string' },
+        parameters: {
+          type: 'object',
+          required: ['input'],
+          properties: {
+            input: {
+              type: 'object',
+              required: ['base', 'candidate', 'commonKeys'],
+              properties: {
+                base: {
+                  oneOf: [
+                    {
+                      type: 'array',
+                      items: { type: 'object' },
+                    },
+                    {
+                      type: 'object',
+                    },
+                  ],
+                },
+                candidate: {
+                  oneOf: [
+                    {
+                      type: 'array',
+                      items: { type: 'object' },
+                    },
+                    {
+                      type: 'object',
+                    },
+                  ],
+                },
+                commonKeys: {
+                  oneOf: [
+                    {
+                      type: 'array',
+                      items: { type: 'string' },
+                    },
+                    {
+                      type: 'object',
+                    },
+                  ],
+                },
+                ignoreKeys: {
+                  oneOf: [
+                    {
+                      type: 'array',
+                      items: { type: 'string' },
+                    },
+                    {
+                      type: 'object',
+                    },
+                  ],
+                },
               },
             },
           },
         },
       },
-    },
-  };
+    };
+  }
 
   static validate(data: any, schema = null) {
     const ajv = new Ajv({ allErrors: true });

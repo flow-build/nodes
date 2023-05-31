@@ -1,5 +1,5 @@
 import { config as dotenvConfig } from 'dotenv';
-import path from 'path';
+import * as path from 'path';
 
 dotenvConfig();
 const BASE_PATH = path.join(__dirname, 'db');

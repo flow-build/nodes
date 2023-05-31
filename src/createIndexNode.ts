@@ -1,41 +1,42 @@
-import { SystemTaskNode, ProcessStatus, utils } from '@flowbuild/engine';
+import { Nodes, ProcessStatus, utils } from '@flowbuild/engine';
 import Ajv from 'ajv';
 import addFormats from 'ajv-formats';
 import { Index } from '@flowbuild/indexer';
 import { logger } from './utils/logger';
 import { db } from './utils/db';
 
-class CreateIndexNode extends SystemTaskNode {
-  [x: string]: any;
-  static schema = {
-    type: 'object',
-    required: ['id', 'name', 'next', 'type', 'lane_id', 'parameters'],
-    properties: {
-      id: { type: 'string' },
-      name: { type: 'string' },
-      next: { type: 'string' },
-      type: { type: 'string' },
-      category: { type: 'string' },
-      lane_id: { type: 'string' },
-      parameters: {
-        type: 'object',
-        properties: {
-          input: {
-            type: 'object',
-            required: ['entity_type', 'entity_id'],
-            properties: {
-              entity_type: {
-                oneOf: [{ type: 'string' }, { type: 'object' }],
-              },
-              entity_id: {
-                oneOf: [{ type: 'string' }, { type: 'object' }],
+class CreateIndexNode extends Nodes.SystemTaskNode {
+  static get schema() {
+    return {
+      type: 'object',
+      required: ['id', 'name', 'next', 'type', 'lane_id', 'parameters'],
+      properties: {
+        id: { type: 'string' },
+        name: { type: 'string' },
+        next: { type: 'string' },
+        type: { type: 'string' },
+        category: { type: 'string' },
+        lane_id: { type: 'string' },
+        parameters: {
+          type: 'object',
+          properties: {
+            input: {
+              type: 'object',
+              required: ['entity_type', 'entity_id'],
+              properties: {
+                entity_type: {
+                  oneOf: [{ type: 'string' }, { type: 'object' }],
+                },
+                entity_id: {
+                  oneOf: [{ type: 'string' }, { type: 'object' }],
+                },
               },
             },
           },
         },
       },
-    },
-  };
+    };
+  }
 
   static validate(spec) {
     const ajv = new Ajv({ allErrors: true });
