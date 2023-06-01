@@ -52,6 +52,7 @@ class ValidateSchemaNode extends Nodes.SystemTaskNode {
       addFormats(ajv);
       const validate = ajv.compile(executionData.schema);
       const validation = validate(executionData.data);
+      console.log('chegou aqui lib nodes validate schema node');
       return [
         {
           data: {

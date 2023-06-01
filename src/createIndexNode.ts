@@ -90,7 +90,7 @@ class CreateIndexNode extends Nodes.SystemTaskNode {
       const time_elapsed = Math.ceil(
         hrt_run_interval[0] * 1000 + hrt_run_interval[1] / 1000000,
       );
-
+      console.log('chegou aqui lib nodes create index node');
       return {
         node_id: this.id,
         bag: bag,

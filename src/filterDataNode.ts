@@ -114,7 +114,7 @@ class FilterDataNode extends Nodes.SystemTaskNode {
           result.unsorted.push(items);
         }
       });
-
+      console.log('chegou aqui lib nodes filter data node');
       return [{ data: result }, ProcessStatus.RUNNING];
     } catch (err) {
       logger.error('filterData node failed', err);

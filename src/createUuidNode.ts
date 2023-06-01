@@ -91,7 +91,7 @@ class CreateUuidNode extends Nodes.SystemTaskNode {
       );
       throw new Error(error);
     }
-
+    console.log('chegou aqui lib nodes create uuid node');
     return [result, ProcessStatus.RUNNING];
   }
 }

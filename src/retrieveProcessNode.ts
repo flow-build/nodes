@@ -64,6 +64,7 @@ class RetrieveProcessesNode extends Nodes.SystemTaskNode {
         executionData.entity_id,
         executionData.limit,
       );
+      console.log('chegou aqui lib nodes retrieve process node');
       return [{ data: result }, ProcessStatus.RUNNING];
     } catch (err) {
       logger.error('retrieveProcesses node failed', err);

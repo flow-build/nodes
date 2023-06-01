@@ -60,6 +60,12 @@ class BasicAuthNode extends Nodes.SystemTaskNode {
   }
 
   async _run(executionData: any) {
+    const maxContentLength = parseInt(
+      process.env.MAX_CONTENT_LENGTH || '20000',
+      10,
+    );
+    const maxBodyLength = parseInt(process.env.MAX_BODY_LENGTH || '20000', 10);
+    const timeout = parseInt(process.env.TIMEOUT || '30000', 10);
     const { verb, baseUrl, route, auth, headers } = this.request;
     const requestConfig: AxiosRequestConfig = {
       method: verb,
@@ -68,11 +74,12 @@ class BasicAuthNode extends Nodes.SystemTaskNode {
       auth,
       headers,
       data: executionData,
-      maxContentLength: process.env.MAX_CONTENT_LENGTH || 20000,
-      maxBodyLength: process.env.MAX_BODY_LENGTH || 20000,
-      timeout: process.env.TIMEOUT || 30000,
+      maxContentLength,
+      maxBodyLength,
+      timeout,
     };
     const result: AxiosResponse = await axios(requestConfig);
+    console.log('chegou aqui lib nodes basic auth node');
     return [
       { status: result.status, data: result.data },
       ProcessStatus.RUNNING,

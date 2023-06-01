@@ -2,7 +2,7 @@ import { ProcessStatus, Nodes } from '@flowbuild/engine';
 import Ajv from 'ajv';
 import addFormats from 'ajv-formats';
 import { logger } from './utils/logger';
-import _ from 'lodash';
+import { omit, isEqual, pick, uniqWith, filter, reject } from 'lodash';
 
 class DeepCompareNode extends Nodes.SystemTaskNode {
   static get schema() {
@@ -124,18 +124,18 @@ class DeepCompareNode extends Nodes.SystemTaskNode {
     return DeepCompareNode.validate(data, schema);
   }
 
-  static clean(data: any, keys: any, ignore: any[] = []) {
+  static clean(data: any[], keys: any, ignore = []) {
     logger.silly('Called DeepCompareNode clean');
     logger.silly(`[DeepCompareNode] data: ${JSON.stringify(data)}`);
-    const withoutIgnore = data.map((item: any) => _.omit(item, ignore));
+    const withoutIgnore = data.map((item) => omit(item, ignore));
     logger.silly(
       `[DeepCompareNode] withoutIgnore: ${JSON.stringify(withoutIgnore)}`,
     );
-    const cleanData = _.uniqWith(withoutIgnore, _.isEqual);
+    const cleanData = uniqWith(withoutIgnore, isEqual);
     logger.silly(`[DeepCompareNode] cleanData: ${JSON.stringify(cleanData)}`);
-    const keysOnly = cleanData.map((item: any) => _.pick(item, keys));
+    const keysOnly = cleanData.map((item) => pick(item, keys));
     logger.silly(`[DeepCompareNode] keysOnly: ${JSON.stringify(keysOnly)}`);
-    const keySet = _.uniqWith(keysOnly, _.isEqual);
+    const keySet = uniqWith(keysOnly, isEqual);
     logger.silly(`[DeepCompareNode] keySet: ${JSON.stringify(keySet)}`);
     if (keySet.length < keysOnly.length) {
       return { duplicates: true };
@@ -214,23 +214,23 @@ class DeepCompareNode extends Nodes.SystemTaskNode {
       let candidateList = candidate;
       for (const baseItem of base) {
         logger.silly(`[DeepCompare] baseItem: ${JSON.stringify(baseItem)}`);
-        const keys = _.pick(baseItem, executionData.commonKeys);
+        const keys = pick(baseItem, executionData.commonKeys);
         logger.silly(`[DeepCompare] keys: ${JSON.stringify(keys)}`);
-        const matchingCandidate = _.filter(candidate, keys);
+        const matchingCandidate = filter(candidate, keys);
         logger.silly(
           `[DeepCompare] matchingCandidate: ${JSON.stringify(
             matchingCandidate,
           )}`,
         );
         if (matchingCandidate.length > 0) {
-          if (_.isEqual(baseItem, matchingCandidate[0])) {
+          if (isEqual(baseItem, matchingCandidate[0])) {
             logger.silly(`[DeepCompare] baseItem = UNCHANGED`);
             result.unchanged.push(keys);
           } else {
             logger.silly(`[DeepCompare] baseItem = CHANGED`);
             result.changed.push(keys);
           }
-          candidateList = _.reject(candidateList, keys);
+          candidateList = reject(candidateList, keys);
           logger.silly(
             `[DeepCompare] remaining candidates: ${JSON.stringify(
               candidateList,
@@ -243,9 +243,9 @@ class DeepCompareNode extends Nodes.SystemTaskNode {
       }
 
       result.onlyAtCandidate = candidateList.map((item: any) =>
-        _.pick(item, executionData.commonKeys),
+        pick(item, executionData.commonKeys),
       );
-
+      console.log('chegou aqui lib nodes deep compare node');
       return [
         {
           data: result,

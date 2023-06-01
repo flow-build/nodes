@@ -69,6 +69,7 @@ class TokenizeNode extends Nodes.SystemTaskNode {
         jwtToken,
         payload: executionData,
       };
+      console.log('chegou aqui lib nodes tokenize node');
       return [{ data: result }, ProcessStatus.RUNNING];
     } catch (err) {
       logger.error('[tokenizeNode] Node failed', err);

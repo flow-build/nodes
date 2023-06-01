@@ -141,7 +141,7 @@ class RemapDataNode extends Nodes.SystemTaskNode {
           remapped_data = [];
         }
       }
-
+      console.log('chegou aqui lib nodes remap data node');
       return [
         {
           status,
