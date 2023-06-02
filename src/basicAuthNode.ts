@@ -7,6 +7,9 @@ require('dotenv').config();
 
 class BasicAuthNode extends Nodes.SystemTaskNode {
   [x: string]: any;
+  constructor(schema: any) {
+    super(schema);
+  }
   static get schema() {
     return merge(super.schema, {
       type: 'object',

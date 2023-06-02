@@ -5,6 +5,9 @@ import { logger } from './utils/logger';
 import { omit, isEqual, pick, uniqWith, filter, reject } from 'lodash';
 
 class DeepCompareNode extends Nodes.SystemTaskNode {
+  constructor(schema: any) {
+    super(schema);
+  }
   static get schema() {
     return {
       type: 'object',
@@ -245,7 +248,6 @@ class DeepCompareNode extends Nodes.SystemTaskNode {
       result.onlyAtCandidate = candidateList.map((item: any) =>
         pick(item, executionData.commonKeys),
       );
-      console.log('chegou aqui lib nodes deep compare node');
       return [
         {
           data: result,

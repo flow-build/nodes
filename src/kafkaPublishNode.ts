@@ -6,6 +6,9 @@ import { logger } from './utils/logger';
 
 class KafkaPublishNode extends Nodes.SystemTaskNode {
   [x: string]: any;
+  constructor(schema: any) {
+    super(schema);
+  }
   static get schema() {
     return {
       type: 'object',
@@ -90,7 +93,6 @@ class KafkaPublishNode extends Nodes.SystemTaskNode {
         message: { ...message, ...{ processId: executionData.process_id } },
         key: event,
       });
-      console.log('chegou aqui lib nodes kafka publish node');
       return [{ data: result }, ProcessStatus.RUNNING];
     } catch (err) {
       logger.error('KafkaPublish node failed', err);

@@ -2,10 +2,13 @@ import { ProcessStatus, Nodes } from '@flowbuild/engine';
 import Ajv from 'ajv';
 import addFormats from 'ajv-formats';
 import { logger } from './utils/logger';
-import _ from 'lodash';
+import { get } from 'lodash';
 
 class RemapDataNode extends Nodes.SystemTaskNode {
   [x: string]: any;
+  constructor(schema: any) {
+    super(schema);
+  }
   static get schema() {
     return {
       type: 'object',
@@ -89,7 +92,7 @@ class RemapDataNode extends Nodes.SystemTaskNode {
           value.length > 0 &&
           value.includes('.')
         ) {
-          const object_value = _.get(item, value);
+          const object_value = get(item, value);
           if (object_value !== undefined) {
             remapped_item[key] = object_value;
           }
@@ -141,7 +144,6 @@ class RemapDataNode extends Nodes.SystemTaskNode {
           remapped_data = [];
         }
       }
-      console.log('chegou aqui lib nodes remap data node');
       return [
         {
           status,
