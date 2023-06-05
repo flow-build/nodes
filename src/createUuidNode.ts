@@ -6,6 +6,9 @@ import { nanoid } from 'nanoid';
 import { v1 as uuidv1, v4 as uuidv4 } from 'uuid';
 
 class CreateUuidNode extends Nodes.SystemTaskNode {
+  constructor(schema: any) {
+    super(schema);
+  }
   static get schema() {
     return {
       type: 'object',
@@ -42,7 +45,7 @@ class CreateUuidNode extends Nodes.SystemTaskNode {
     };
   }
 
-  static validate(spec) {
+  static validate(spec: any) {
     const ajv = new Ajv({ allErrors: true });
     addFormats(ajv);
     const validate = ajv.compile(CreateUuidNode.schema);
@@ -54,7 +57,7 @@ class CreateUuidNode extends Nodes.SystemTaskNode {
     return CreateUuidNode.validate(this._spec);
   }
 
-  async _run(executionData) {
+  async _run(executionData: { type: string; options: { size: number; version: string; }; }) {
     const result: any = {};
 
     function getVersion(uVersion: string) {
@@ -91,7 +94,6 @@ class CreateUuidNode extends Nodes.SystemTaskNode {
       );
       throw new Error(error);
     }
-    console.log('chegou aqui lib nodes create uuid node');
     return [result, ProcessStatus.RUNNING];
   }
 }
