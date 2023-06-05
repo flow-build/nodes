@@ -6,6 +6,9 @@ import { logger } from './utils/logger';
 import { db } from './utils/db';
 
 class CreateIndexNode extends Nodes.SystemTaskNode {
+  constructor(schema: any) {
+    super(schema);
+  }
   static get schema() {
     return {
       type: 'object',
@@ -38,7 +41,7 @@ class CreateIndexNode extends Nodes.SystemTaskNode {
     };
   }
 
-  static validate(spec) {
+  static validate(spec: any) {
     const ajv = new Ajv({ allErrors: true });
     addFormats(ajv);
     const validate = ajv.compile(CreateIndexNode.schema);
@@ -90,7 +93,6 @@ class CreateIndexNode extends Nodes.SystemTaskNode {
       const time_elapsed = Math.ceil(
         hrt_run_interval[0] * 1000 + hrt_run_interval[1] / 1000000,
       );
-      console.log('chegou aqui lib nodes create index node');
       return {
         node_id: this.id,
         bag: bag,

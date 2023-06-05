@@ -153,11 +153,10 @@ describe("schema validation", () => {
       nodeExample.parameters.request.baseUrl = "https://postman-echo.com/status/400";
       const myNode = new BasicAuthNode(nodeExample);
       const nodeResult = await myNode.run({});
-      console.log('nodeResult', nodeResult)
       expect(nodeResult.error).toBeDefined();
       expect(nodeResult.error).toBe('AxiosError: Request failed with status code 400');
     });
-    
+
   });
   
 });
