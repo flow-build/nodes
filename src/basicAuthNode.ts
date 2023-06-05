@@ -82,7 +82,6 @@ class BasicAuthNode extends Nodes.SystemTaskNode {
       timeout,
     };
     const result: AxiosResponse = await axios(requestConfig);
-    console.log('chegou aqui lib nodes basic auth node');
     return [
       { status: result.status, data: result.data },
       ProcessStatus.RUNNING,
