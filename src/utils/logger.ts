@@ -8,7 +8,7 @@ const logger = createLogger({
   format: format.combine(
     format.colorize(),
     format.timestamp(),
-    format.label({ label: 'KW', message: true }),
+    format.label({ label: 'NODES', message: true }),
     format.printf((info) => `${info.timestamp} ${info.level}: ${info.message}`),
   ),
   transports: [new transports.Console()],

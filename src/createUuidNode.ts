@@ -1,101 +1,97 @@
-import { Nodes, ProcessStatus } from '@flowbuild/engine';
-import Ajv from 'ajv';
-import addFormats from 'ajv-formats';
+import { JSONSchemaType } from 'ajv';
 import { logger } from './utils/logger';
 import { nanoid } from 'nanoid';
 import { v1 as uuidv1, v4 as uuidv4 } from 'uuid';
+import { SystemTaskNode, SystemTaskNodeSpec, SystemTaskNodeParameters } from './systemTask';
+import { ProcessStatus } from './utils/type';
 
-class CreateUuidNode extends Nodes.SystemTaskNode {
-  constructor(schema: any) {
-    super(schema);
-  }
-  static get schema() {
-    return {
+export interface CreateUuidNodeSpec extends SystemTaskNodeSpec {
+  parameters: CreateUuidNodeParameters
+}
+
+type CreateUuidNodeParameters = {
+  input: CreateUuidNodeInput
+}
+
+type CreateUuidNodeInput = {
+  type: string
+  options: OptionSchema
+}
+
+type OptionSchema = {
+  version: string | {},
+  size: number | {}
+}
+
+type ExecutionData = {
+  type: string,
+  options: CreateUuidOptions
+}
+
+type CreateUuidOptions = {
+  version: string,
+  size: number
+}
+
+type Result = {
+  id: string
+}
+
+export class CreateUuidNode extends SystemTaskNode {
+  static get schema(): JSONSchemaType<CreateUuidNodeSpec> {
+    let mySchema = super.schema;
+    mySchema.properties.parameters = {
       type: 'object',
-      required: ['id', 'name', 'next', 'type', 'lane_id', 'parameters'],
       properties: {
-        id: { type: 'string' },
-        name: { type: 'string' },
-        next: { type: 'string' },
-        type: { type: 'string' },
-        category: { type: 'string' },
-        lane_id: { type: 'string' },
-        parameters: {
+        input: {
           type: 'object',
+          required: ['type'],
           properties: {
-            input: {
+            type: { type: 'string', enum: ['uuid', 'nanoid'] },
+            options: {
               type: 'object',
-              required: ['type'],
               properties: {
-                type: { type: 'string', enum: ['uuid', 'nanoid'] },
-                options: {
-                  type: 'object',
-                  properties: {
-                    version: { type: 'string', enum: ['v1', 'v4'] },
-                    size: {
-                      oneOf: [{ type: 'integer' }, { type: 'object' }],
-                    },
-                  },
+                version: { type: 'string', enum: ['v1', 'v4'] },
+                size: {
+                  oneOf: [{ type: 'integer' }, { type: 'object' }],
                 },
               },
             },
           },
         },
       },
-    };
-  }
-
-  static validate(spec: any) {
-    const ajv = new Ajv({ allErrors: true });
-    addFormats(ajv);
-    const validate = ajv.compile(CreateUuidNode.schema);
-    const validation = validate(spec);
-    return [validation, JSON.stringify(validate.errors)];
-  }
-
-  validate() {
-    return CreateUuidNode.validate(this._spec);
-  }
-
-  async _run(executionData: { type: string; options: { size: number; version: string; }; }) {
-    const result: any = {};
-
-    function getVersion(uVersion: string) {
-      if (!uVersion) {
-        return uuidv1();
-      }
-
-      const version: { [key: string]: () => string } = {
-        v1: () => uuidv1(),
-        v4: () => uuidv4(),
-      };
-
-      return version[uVersion]?.() || uuidv1();
     }
+    return mySchema;
+  }
+
+  validate(): [boolean, string] {
+    return CreateUuidNode.validate(this._spec, CreateUuidNode.schema);
+  }
+
+  async _run(executionData: ExecutionData): Promise<[Result, ProcessStatus]> {
+    const result: Result = { id: '' };
 
     try {
-      if (executionData.type === 'nanoid') {
-        if (executionData.options?.size) {
-          result.id = nanoid(executionData.options.size);
-        } else {
-          result.id = nanoid();
-        }
-      } else {
-        result.id = getVersion(executionData.options?.version);
+      switch (executionData.type) {
+        case 'v1':
+        default:
+          result.id = uuidv1();
+          break;
+        case 'v4':
+          result.id = uuidv4();
+          break;
+        case 'nanoid':
+          if (executionData.options?.size) {
+            result.id = nanoid(executionData.options.size);
+          } else {
+            result.id = nanoid();
+          }
       }
     } catch (error) {
-      logger.error(
-        'NODE.ERROR',
-        `ERROR AT NID [${this.id}] | CREATE UUID | unexpected error`,
-        {
-          node_id: this.id,
-          error: error,
-        },
-      );
-      throw new Error(error);
+      logger.error(`ERROR AT NID [${this.id}] | CREATE UUID | unexpected error`);
+      logger.error(JSON.stringify(error));
+      return [result, ProcessStatus.ERROR];
     }
     return [result, ProcessStatus.RUNNING];
   }
 }
-
-export default CreateUuidNode;
